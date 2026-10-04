@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B6E78">
+<title>Pendaftaran ASCE 2026</title>
+<style>
+:root{--bg:#EDF1F3;--card:#fff;--ink:#14262B;--muted:#5B6E74;--line:#D3DCE0;--accent:#0B6E78;--accent-d:#095A63;--tint:#E3F1F2;--ok:#1E7B4F;--warn:#8F5206;--err:#B3261E;--r:14px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:560px;margin:0 auto;padding:20px 16px 48px}
+header{padding:8px 4px 20px}
+header p{margin:0;color:var(--muted);font-size:14px}
+header h1{margin:2px 0 0;font-size:22px;letter-spacing:-.01em}
+.progress{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 16px;padding:0;list-style:none}
+.progress li{font-size:12.5px;color:var(--muted);border-top:4px solid var(--line);padding-top:6px;line-height:1.3}
+.progress li.done{border-color:var(--accent);color:var(--ink)}
+.progress li.now{border-color:var(--accent);color:var(--accent-d);font-weight:700}
+.card{background:var(--card);border-radius:20px;padding:22px 18px;box-shadow:0 1px 2px rgba(20,38,43,.06),0 8px 24px rgba(20,38,43,.06)}
+h2{font-size:20px;margin:0 0 4px;letter-spacing:-.01em;outline:none}
+.sub{margin:0 0 20px;color:var(--muted);font-size:14.5px}
+.field{margin-bottom:18px}
+label,.lbl{display:block;font-weight:600;font-size:14.5px;margin-bottom:6px}
+.opt{font-weight:400;color:var(--muted)}
+input[type=text],input[type=email],input[type=tel],select,textarea{width:100%;min-height:48px;padding:11px 13px;font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:12px;appearance:none;-webkit-appearance:none}
+select{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235B6E74' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:38px}
+textarea{min-height:92px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:3px solid rgba(11,110,120,.28);border-color:var(--accent)}
+[aria-invalid=true]{border-color:var(--err)!important}
+.err{color:var(--err);font-size:13.5px;margin-top:5px;min-height:0}
+.err:not(:empty)::before{content:"Periksa: ";font-weight:700}
+.hint{font-size:13px;color:var(--muted);margin-top:5px}
+.cards{display:grid;gap:10px}
+.cards.three{grid-template-columns:repeat(3,1fr)}
+.rc{position:relative}
+.rc input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.rc span{display:block;min-height:48px;padding:12px 13px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-weight:600;text-align:center}
+.cards:not(.three) .rc span{text-align:left}
+.rc small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.rc input:checked+span{border-color:var(--accent);background:var(--tint);box-shadow:inset 0 0 0 1px var(--accent)}
+.rc input:focus-visible+span{outline:3px solid rgba(11,110,120,.35);outline-offset:2px}
+.rc input:checked+span::after{content:"Dipilih";display:block;font-size:12px;font-weight:600;color:var(--accent-d)}
+.actions{display:flex;gap:10px;margin-top:24px}
+button{font:inherit;font-weight:700;min-height:50px;border-radius:12px;border:0;padding:0 20px;cursor:pointer}
+.primary{flex:1;background:var(--accent);color:#fff}
+.primary:active{background:var(--accent-d)}
+.primary:disabled{background:#9DB6BA;cursor:not-allowed}
+.quiet{background:transparent;color:var(--muted);border:1.5px solid var(--line)}
+button:focus-visible{outline:3px solid rgba(11,110,120,.4);outline-offset:2px}
+.slip{border:1.5px dashed var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:18px;background:#FAFCFC}
+.row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:14.5px}
+.row b{text-align:right;font-weight:600;overflow-wrap:anywhere}
+.row.total{border-top:1.5px dashed var(--line);margin-top:8px;padding-top:12px;font-size:17px}
+.row.total b{font-size:22px;color:var(--accent-d)}
+.bank{background:var(--tint);border-radius:var(--r);padding:16px;margin-bottom:18px}
+.bank .acct{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0}
+.bank .num{font-size:24px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.copy{min-height:44px;min-width:84px;background:#fff;color:var(--accent-d);border:1.5px solid var(--accent)}
+.copy.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.notice{background:#FFF6E5;color:var(--warn);border-radius:12px;padding:10px 13px;font-size:14px;margin-bottom:18px}
+ol.steps{margin:0 0 18px;padding-left:20px;font-size:14.5px}
+ol.steps li{margin-bottom:4px}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:20px 14px;text-align:center;background:#FAFCFC}
+.drop.over{border-color:var(--accent);background:var(--tint)}
+.drop p{margin:0 0 12px;color:var(--muted);font-size:14.5px}
+.pick{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.pick button{min-height:46px;background:#fff;color:var(--accent-d);border:1.5px solid var(--accent)}
+.preview{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:var(--r);padding:10px}
+.preview img,.preview .pdf{width:72px;height:72px;border-radius:10px;object-fit:cover;background:var(--tint);flex:none;display:grid;place-items:center;font-weight:700;color:var(--accent-d)}
+.preview .meta{flex:1;min-width:0;font-size:14px}
+.preview .meta b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.preview .meta span{color:var(--muted)}
+.consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0 0;font-size:14px;font-weight:400}
+.consent input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--accent)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+[hidden]{display:none!important}
+.banner{background:#FDECEA;color:var(--err);border-radius:12px;padding:12px 14px;margin-top:16px;font-size:14.5px}
+.done-card{text-align:center}
+.tick{width:64px;height:64px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;margin:4px auto 14px;font-size:32px}
+.ref{font-size:26px;font-weight:700;letter-spacing:.06em;color:var(--accent-d);margin:6px 0 2px}
+.done-card .slip{text-align:left;margin-top:18px}
+footer a{color:var(--accent-d);font-weight:600}
+footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
+.step{animation:in .22s ease-out}
+@keyframes in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.step{animation:none}}
+@media(max-width:380px){.cards.three{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <p id="evTag"></p>
+  <h1 id="evTitle"></h1>
+</header>
+
+<ol class="progress" id="progress" aria-label="Kemajuan">
+  <li>Data umum</li><li>Detail acara</li><li>Pembayaran &amp; kirim</li>
+</ol>
+
+<div class="card">
+<form id="f" novalidate autocomplete="on">
+
+<!-- Step 1 -->
+<section class="step" data-step="0" aria-labelledby="h0">
+  <h2 id="h0" tabindex="-1">Data umum</h2>
+  <p class="sub">Isi data siswa yang akan didaftarkan.</p>
+
+  <div class="field"><label for="fullName">Nama lengkap siswa</label>
+    <input id="fullName" name="fullName" type="text" autocomplete="name" aria-describedby="e-fullName">
+    <div class="err" id="e-fullName" role="alert"></div></div>
+
+  <div class="field"><label for="parentName">Nama orang tua / wali</label>
+    <input id="parentName" name="parentName" type="text" autocomplete="off" aria-describedby="e-parentName">
+    <div class="err" id="e-parentName" role="alert"></div></div>
+
+  <div class="field"><label for="email">Alamat email</label>
+    <input id="email" name="email" type="email" inputmode="email" autocomplete="email" aria-describedby="e-email">
+    <div class="err" id="e-email" role="alert"></div></div>
+
+  <div class="field"><label for="phone">Nomor WhatsApp / telepon</label>
+    <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xx xxxx xxxx" aria-describedby="e-phone">
+    <div class="err" id="e-phone" role="alert"></div></div>
+
+  <div class="field"><label for="institution">Sekolah / Institusi</label>
+    <input id="institution" name="institution" type="text" autocomplete="organization" aria-describedby="e-institution">
+    <div class="err" id="e-institution" role="alert"></div></div>
+
+  <div class="field"><label for="city">Kota / Kabupaten</label>
+    <input id="city" name="city" type="text" autocomplete="address-level2" aria-describedby="e-city">
+    <div class="err" id="e-city" role="alert"></div></div>
+
+  <div class="actions"><button type="button" class="primary" data-next>Lanjut</button></div>
+</section>
+
+<!-- Step 2 -->
+<section class="step" data-step="1" aria-labelledby="h1" hidden>
+  <h2 id="h1" tabindex="-1">Detail acara</h2>
+  <p class="sub">Pilih satu atau lebih lomba. Acara diadakan pada 14 November 2026.</p>
+
+  <div class="field" role="radiogroup" aria-labelledby="l-ev">
+    <span class="lbl" id="l-ev">Pilihan lomba</span>
+    <div class="cards" id="events"></div>
+    <div class="err" id="e-event" role="alert"></div></div>
+
+  <div class="actions"><button type="button" class="quiet" data-back>Kembali</button><button type="button" class="primary" data-next>Lanjut</button></div>
+</section>
+
+<!-- Step 3 -->
+<section class="step" data-step="2" aria-labelledby="h2" hidden>
+  <h2 id="h2" tabindex="-1">Pembayaran &amp; kirim</h2>
+  <p class="sub">Periksa data, lakukan pembayaran, lalu unggah bukti transfer.</p>
+
+  <div class="slip" id="summary" aria-label="Ringkasan pendaftaran"></div>
+
+  <div class="bank">
+    <div class="lbl" style="margin:0" id="bankName"></div>
+    <div class="acct"><span class="num" id="acctNum"></span><button type="button" class="copy" id="copyBtn">Salin</button></div>
+    <div id="acctHolder" style="font-size:14.5px"></div>
+  </div>
+
+    <ol class="steps">
+    <li>Transfer sesuai total yang tertera di atas.</li>
+    <li>Foto atau tangkap layar bukti transfer.</li>
+    <li>Unggah di bawah ini, lalu tekan Kirim pendaftaran.</li>
+  </ol>
+
+  <div class="field">
+    <span class="lbl">Bukti transfer</span>
+    <div class="drop" id="drop">
+      <div id="dropIdle">
+        <p>JPG, PNG, atau PDF, maksimal 5 MB</p>
+        <div class="pick">
+          <button type="button" id="btnFile">Pilih file</button>
+          <button type="button" id="btnCam">Ambil foto</button>
+        </div>
+      </div>
+      <div class="preview" id="preview" hidden>
+        <div id="thumb"></div>
+        <div class="meta"><b id="fName"></b><span id="fSize"></span></div>
+        <button type="button" class="quiet" id="btnReplace" style="min-height:44px;padding:0 14px">Ganti</button>
+      </div>
+    </div>
+    <input id="fileIn" type="file" accept="image/jpeg,image/png,image/heic,image/heif,application/pdf" hidden>
+    <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
+    <div class="err" id="e-file" role="alert"></div>
+  </div>
+
+  <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+  <label class="consent"><input type="checkbox" id="consent">
+    <span>Saya setuju data dan bukti transfer saya digunakan hanya untuk memproses pendaftaran ini dan menghubungi saya terkait pendaftaran.</span></label>
+  <label class="consent"><input type="checkbox" id="consentMedia">
+    <span>Saya mengizinkan foto dan video anak saya selama acara digunakan untuk dokumentasi dan publikasi SD Kristen Petra 5 Surabaya.</span></label>
+
+  <div class="banner" id="banner" role="alert" hidden></div>
+
+  <div class="actions"><button type="button" class="quiet" data-back>Kembali</button><button type="button" class="primary" id="submitBtn" disabled>Kirim pendaftaran</button></div>
+</section>
+
+</form>
+
+<!-- Done -->
+<section class="done-card" id="done" aria-labelledby="hd" hidden>
+  <div class="tick" aria-hidden="true">&#10003;</div>
+  <h2 id="hd" tabindex="-1">Pendaftaran diterima</h2>
+  <p class="sub" style="margin-bottom:12px">Simpan nomor referensi ini. Salinannya juga dikirim ke email Anda.</p>
+  <div class="ref" id="refNo"></div>
+  <div class="slip" id="doneSummary"></div>
+  <p class="sub" style="margin:0">Pembayaran Anda akan kami verifikasi dalam 1&times;24 jam. Setelah terverifikasi, konfirmasi dikirim ke email Anda. Jika ada kendala, panitia akan menghubungi Anda melalui WhatsApp. Belum menerima email? Cek folder Spam atau Promosi.</p>
+</section>
+<section class="done-card" id="closed" hidden><h2>Pendaftaran ditutup</h2><p class="sub">Terima kasih atas minat Anda. Pendaftaran ASCE 2026 sudah ditutup.</p></section>
+</div>
+<footer><a id="help" href="#">Butuh bantuan? Hubungi panitia via WhatsApp</a><br>Data Anda hanya digunakan untuk acara ini.<br>Hak Cipta &copy; 2026 SD Kristen Petra 5 Surabaya</footer>
+</main>
+
+<iframe name="gas" id="gas" title="Target pengiriman" hidden></iframe>
+
+<script>
+/* ===== CONFIG: edit these ===== */
+const CONFIG = {
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyhJVf-lZ25UE8OddMbfanJVOR2QfEatrAwD4fOpciklgKzyOOa3fpoxG67vOVnrdB9/exec",
+  EVENT_NAME: "ASCE 2026",
+  EVENT_TITLE: "Time Jumpers: Past to Tomorrow!",
+  EVENT_DATE: "14 November 2026",
+  BANK: { name: "Nama Bank", number: "1234567890", holder: "Nama Pemilik Rekening" },
+  UNIQUE_CODE: 0,
+  CLOSES_AT: "", /* contoh: "2026-11-07T23:59:00+07:00"; kosong = tidak ditutup */
+  WA_NUMBER: "628xxxxxxxxxx", /* WhatsApp panitia, format 62... */
+  /* price 0 tampil sebagai "Rp [harga]" sampai Anda isi */
+  EVENTS: [
+    { id: "dance13", name: "Creative Dance", grade: "Kelas 1-3", price: 75000 },
+    { id: "dance46", name: "Creative Dance", grade: "Kelas 4-6", price: 75000 },
+    { id: "bento", name: "Bento Creation", grade: "Kelas [isi kelas]", price: 0 },
+    { id: "story", name: "Storytelling \u201CCita-citaku\u201D", grade: "Kelas [isi kelas]", price: 0 }
+  ]
+};
+/* ================================ */
+
+const $ = id => document.getElementById(id);
+const f = $("f"), sections = [...document.querySelectorAll(".step")], crumbs = [...$("progress").children];
+const idr = n => !n ? "Rp [harga]" : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
+const val = n => { const e = f.elements[n]; if (!e) return ""; if (e.value !== undefined && !(e instanceof RadioNodeList && !e.value)) return (e.value || "").trim(); return ""; };
+const evs = () => CONFIG.EVENTS.filter(e => f.querySelector('input[name="event"][value="' + e.id + '"]').checked);
+const total = () => evs().reduce((t, e) => t + e.price, 0) + CONFIG.UNIQUE_CODE;
+let step = 0, file = null, busy = false;
+const subId = crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2);
+
+$("evTag").textContent = "Formulir Pendaftaran " + CONFIG.EVENT_NAME;
+$("evTitle").textContent = CONFIG.EVENT_TITLE;
+document.title = "Pendaftaran " + CONFIG.EVENT_NAME;
+$("bankName").textContent = CONFIG.BANK.name;
+$("acctNum").textContent = CONFIG.BANK.number;
+$("acctHolder").textContent = "a/n " + CONFIG.BANK.holder;
+
+/* Kartu lomba */
+$("events").innerHTML = CONFIG.EVENTS.map(e =>
+  `<label class="rc"><input type="checkbox" name="event" value="${e.id}"><span>${e.name}<small>${e.grade}</small><small>${idr(e.price)}</small></span></label>`).join("");
+
+/* Validasi */
+const rules = {
+  fullName: v => v.length < 2 ? "Isi nama lengkap siswa." : "",
+  email: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "" : "Isi alamat email yang valid, misalnya nama@email.com.",
+  phone: v => /^\+?\d{9,15}$/.test(v.replace(/[\s-]/g, "")) ? "" : "Isi nomor telepon 9 sampai 15 digit.",
+  parentName: v => v.length < 2 ? "Isi nama orang tua atau wali." : "",
+  institution: v => v ? "" : "Isi nama sekolah atau institusi.",
+  city: v => v ? "" : "Isi kota atau kabupaten.",
+  event: () => evs().length ? "" : "Pilih minimal satu lomba."
+};
+const stepFields = [["fullName","parentName","email","phone","institution","city"], ["event"]];
+
+function check(n) {
+  const msg = rules[n] ? rules[n](val(n)) : "";
+  const box = $("e-" + n); if (box) box.textContent = msg;
+  const els = f.elements[n]; (els && els.length && !els.tagName ? [...els] : [els]).forEach(e => e && e.setAttribute("aria-invalid", msg ? "true" : "false"));
+  return !msg;
+}
+function checkStep(s) {
+  let first = null;
+  stepFields[s].forEach(n => { if (!check(n) && !first) first = n; });
+  if (first) { const e = f.elements[first]; (e.length && !e.tagName ? e[0] : e).focus(); }
+  return !first;
+}
+["fullName","parentName","email","phone","institution","city"].forEach(n => f.elements[n].addEventListener("blur", () => check(n)));
+f.elements.event.forEach(r => r.addEventListener("change", () => check("event")));
+
+/* Navigation */
+function show(n, push) {
+  step = n;
+  sections.forEach((s, i) => s.hidden = i !== n);
+  crumbs.forEach((c, i) => { c.className = i < n ? "done" : i === n ? "now" : ""; if (i === n) c.setAttribute("aria-current", "step"); else c.removeAttribute("aria-current"); });
+  if (n === 2) renderSummary();
+  if (push) history.pushState({ s: n }, "");
+  window.scrollTo(0, 0);
+  $("h" + n).focus({ preventScroll: true });
+}
+document.querySelectorAll("[data-next]").forEach(b => b.onclick = () => { if (checkStep(step)) show(step + 1, true); });
+document.querySelectorAll("[data-back]").forEach(b => b.onclick = () => history.back());
+window.addEventListener("popstate", e => { if (busy) return; show(e.state && e.state.s ? e.state.s : 0, false); });
+history.replaceState({ s: 0 }, "");
+
+function summaryHTML() {
+  const rows = [["Nama siswa", val("fullName")], ["Orang tua / wali", val("parentName")]].concat(evs().map(e => [e.name + ", " + e.grade, idr(e.price)]), [["Tanggal", CONFIG.EVENT_DATE]]).filter(r => r[1]);
+  const box = document.createElement("div");
+  rows.forEach(r => { const d = document.createElement("div"); d.className = "row"; const a = document.createElement("span"); a.textContent = r[0]; const b = document.createElement("b"); b.textContent = r[1]; d.append(a, b); box.append(d); });
+  const t = document.createElement("div"); t.className = "row total"; t.innerHTML = "<span>Total</span><b></b>"; t.lastChild.textContent = idr(total()); box.append(t);
+  return box;
+}
+function renderSummary() { $("summary").replaceChildren(...summaryHTML().childNodes); }
+
+/* Copy account number */
+$("copyBtn").onclick = async () => {
+  const b = $("copyBtn"), txt = CONFIG.BANK.number;
+  try { await navigator.clipboard.writeText(txt); }
+  catch (_) { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); try { document.execCommand("copy"); } catch (e) {} t.remove(); }
+  b.textContent = "Tersalin"; b.classList.add("ok"); setTimeout(() => { b.textContent = "Salin"; b.classList.remove("ok"); }, 2000);
+};
+
+/* File upload */
+const OK_TYPES = ["image/jpeg", "image/png", "image/heic", "image/heif", "application/pdf"], MAX = 5 * 1024 * 1024;
+const sizeTxt = b => b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB";
+function shrink(fl) {
+  return new Promise(res => {
+    const u = URL.createObjectURL(fl), im = new Image();
+    im.onload = () => {
+      URL.revokeObjectURL(u);
+      const k = Math.min(1, 1600 / Math.max(im.width, im.height));
+      if (k === 1 && fl.type === "image/jpeg" && fl.size < 1.5e6) return res(fl);
+      const c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+      const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+      c.toBlob(b => res(b ? new File([b], fl.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : null), "image/jpeg", 0.82);
+    };
+    im.onerror = () => { URL.revokeObjectURL(u); res(null); };
+    im.src = u;
+  });
+}
+async function setFile(fl) {
+  if (!fl) return;
+  const err = m => { $("e-file").textContent = m; };
+  if (!OK_TYPES.includes(fl.type)) return err("Gunakan file JPG, PNG, atau PDF.");
+  if (fl.type !== "application/pdf") {
+    err("Memproses foto..."); fl = await shrink(fl);
+    if (!fl) return err("Foto tidak dapat dibaca. Gunakan JPG atau PNG, atau tangkap layar bukti transfer.");
+  }
+  if (fl.size > MAX) return err("Ukuran file ini " + sizeTxt(fl.size) + ". Pilih file di bawah 5 MB.");
+  err("");
+  if (file && file.url) URL.revokeObjectURL(file.url);
+  file = fl;
+  const thumb = $("thumb");
+  if (fl.type === "application/pdf") thumb.innerHTML = '<div class="pdf">PDF</div>';
+  else { file.url = URL.createObjectURL(fl); thumb.innerHTML = ""; const im = new Image(); im.src = file.url; im.alt = "Pratinjau bukti transfer"; thumb.append(im); }
+  $("fName").textContent = fl.name; $("fSize").textContent = sizeTxt(fl.size);
+  $("dropIdle").hidden = true; $("preview").hidden = false;
+  updateSubmit();
+}
+$("btnFile").onclick = $("btnReplace").onclick = () => { $("fileIn").value = ""; $("fileIn").click(); };
+$("btnCam").onclick = () => { $("camIn").value = ""; $("camIn").click(); };
+$("fileIn").onchange = e => setFile(e.target.files[0]);
+$("camIn").onchange = e => setFile(e.target.files[0]);
+["dragover", "dragenter"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.add("over"); }));
+["dragleave", "drop"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.remove("over"); }));
+$("drop").addEventListener("drop", e => setFile(e.dataTransfer.files[0]));
+$("consent").onchange = $("consentMedia").onchange = updateSubmit;
+function updateSubmit() { $("submitBtn").disabled = busy || !(file && $("consent").checked && $("consentMedia").checked); }
+
+/* Submit via hidden iframe (no CORS) */
+let timer = null;
+function fail(msg) { busy = false; clearTimeout(timer); $("banner").textContent = msg; $("banner").hidden = false; $("submitBtn").textContent = "Kirim pendaftaran"; updateSubmit(); }
+function success(ref) {
+  clearTimeout(timer); busy = false;
+  f.hidden = true; $("done").hidden = false; crumbs.forEach(c => c.className = "done");
+  $("refNo").textContent = ref;
+  $("doneSummary").replaceChildren(...summaryHTML().childNodes);
+  window.scrollTo(0, 0); $("hd").focus({ preventScroll: true });
+}
+window.addEventListener("message", e => {
+  if (!busy || !/(^https:\/\/script\.google\.com$|\.googleusercontent\.com$)/.test(e.origin) || !e.data || e.data.type !== "registration") return;
+  e.data.ok ? success(e.data.ref) : fail(e.data.message || "Terjadi kesalahan. Silakan coba lagi.");
+});
+
+$("submitBtn").onclick = () => {
+  if (busy || !file) return;
+  if (!checkStep(0)) return show(0, true);
+  if (!checkStep(1)) return show(1, true);
+  busy = true; $("banner").hidden = true; $("submitBtn").disabled = true; $("submitBtn").textContent = "Mengirim, mohon tunggu...";
+  if (CONFIG.SCRIPT_URL.includes("PASTE_")) { setTimeout(() => success("REG-DEMO-0001"), 900); return; }
+  const rd = new FileReader();
+  rd.onerror = () => fail("File tidak dapat dibaca. Pilih ulang file Anda.");
+  rd.onload = () => {
+    const data = {
+      fullName: val("fullName"), parentName: val("parentName"), email: val("email"), phone: val("phone"),
+      institution: val("institution"), city: val("city"),
+      eventSelection: evs().map(e => e.name + " (" + e.grade + ")").join("; "), eventDate: CONFIG.EVENT_DATE,
+      totalAmount: total(), mediaConsent: "Ya", submissionId: subId, website: val("website"),
+      fileName: file.name, fileType: file.type, fileData: String(rd.result).split(",")[1]
+    };
+    const form = document.createElement("form");
+    form.method = "POST"; form.action = CONFIG.SCRIPT_URL; form.target = "gas"; form.hidden = true;
+    Object.entries(data).forEach(([k, v]) => { const i = document.createElement("textarea"); i.name = k; i.value = v; form.append(i); });
+    document.body.append(form); form.submit(); form.remove();
+    timer = setTimeout(() => fail("Belum ada konfirmasi dari server. Cek email Anda dulu. Jika belum ada email, tekan Kirim pendaftaran sekali lagi (data tidak akan ganda)."), 60000);
+  };
+  rd.readAsDataURL(file);
+};
+$("help").href = "https://wa.me/" + CONFIG.WA_NUMBER + "?text=" + encodeURIComponent("Halo panitia " + CONFIG.EVENT_NAME + ", saya butuh bantuan pendaftaran.");
+if (CONFIG.CLOSES_AT && Date.now() > new Date(CONFIG.CLOSES_AT)) { f.hidden = true; $("progress").hidden = true; $("closed").hidden = false; }
+</script>
+</body>
+</html>
