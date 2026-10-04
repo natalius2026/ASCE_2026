@@ -97,7 +97,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
 </header>
 
 <ol class="progress" id="progress" aria-label="Kemajuan">
-  <li>Data umum</li><li>Detail acara</li><li>Pembayaran &amp; kirim</li>
+  <li>Data umum</li><li>Detail acara</li><li>Ringkasan &amp; kirim</li>
 </ol>
 
 <div class="card">
@@ -150,48 +150,15 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
 
 <!-- Step 3 -->
 <section class="step" data-step="2" aria-labelledby="h2" hidden>
-  <h2 id="h2" tabindex="-1">Pembayaran &amp; kirim</h2>
-  <p class="sub">Periksa data, lakukan pembayaran, lalu unggah bukti transfer.</p>
+  <h2 id="h2" tabindex="-1">Ringkasan &amp; kirim</h2>
+  <p class="sub">Periksa data Anda sebelum mengirim. Pendaftaran ini gratis.</p>
 
   <div class="slip" id="summary" aria-label="Ringkasan pendaftaran"></div>
-
-  <div class="bank">
-    <div class="lbl" style="margin:0" id="bankName"></div>
-    <div class="acct"><span class="num" id="acctNum"></span><button type="button" class="copy" id="copyBtn">Salin</button></div>
-    <div id="acctHolder" style="font-size:14.5px"></div>
-  </div>
-
-    <ol class="steps">
-    <li>Transfer sesuai total yang tertera di atas.</li>
-    <li>Foto atau tangkap layar bukti transfer.</li>
-    <li>Unggah di bawah ini, lalu tekan Kirim pendaftaran.</li>
-  </ol>
-
-  <div class="field">
-    <span class="lbl">Bukti transfer</span>
-    <div class="drop" id="drop">
-      <div id="dropIdle">
-        <p>JPG, PNG, atau PDF, maksimal 5 MB</p>
-        <div class="pick">
-          <button type="button" id="btnFile">Pilih file</button>
-          <button type="button" id="btnCam">Ambil foto</button>
-        </div>
-      </div>
-      <div class="preview" id="preview" hidden>
-        <div id="thumb"></div>
-        <div class="meta"><b id="fName"></b><span id="fSize"></span></div>
-        <button type="button" class="quiet" id="btnReplace" style="min-height:44px;padding:0 14px">Ganti</button>
-      </div>
-    </div>
-    <input id="fileIn" type="file" accept="image/jpeg,image/png,image/heic,image/heif,application/pdf" hidden>
-    <input id="camIn" type="file" accept="image/*" capture="environment" hidden>
-    <div class="err" id="e-file" role="alert"></div>
-  </div>
 
   <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 
   <label class="consent"><input type="checkbox" id="consent">
-    <span>Saya setuju data dan bukti transfer saya digunakan hanya untuk memproses pendaftaran ini dan menghubungi saya terkait pendaftaran.</span></label>
+    <span>Saya setuju data yang saya isi digunakan hanya untuk memproses pendaftaran ini dan menghubungi saya terkait pendaftaran.</span></label>
   <label class="consent"><input type="checkbox" id="consentMedia">
     <span>Saya mengizinkan foto dan video anak saya selama acara digunakan untuk dokumentasi dan publikasi SD Kristen Petra 5 Surabaya.</span></label>
 
@@ -209,7 +176,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
   <p class="sub" style="margin-bottom:12px">Simpan nomor referensi ini. Salinannya juga dikirim ke email Anda.</p>
   <div class="ref" id="refNo"></div>
   <div class="slip" id="doneSummary"></div>
-  <p class="sub" style="margin:0 0 12px">Pembayaran Anda akan kami verifikasi dalam 1&times;24 jam. Jika ada kendala, panitia akan menghubungi Anda melalui WhatsApp.</p>
+  <p class="sub" style="margin:0 0 12px">Pendaftaran Anda sudah kami terima. Jika ada kendala, panitia akan menghubungi Anda melalui WhatsApp.</p>
   <p class="sub" style="margin:0">Belum menerima email konfirmasi? Cek folder Spam atau Promosi.</p>
 </section>
 <section class="done-card" id="closed" hidden><h2>Pendaftaran ditutup</h2><p class="sub">Terima kasih atas minat Anda. Pendaftaran ASCE 2026 sudah ditutup.</p></section>
@@ -226,16 +193,11 @@ const CONFIG = {
   EVENT_NAME: "ASCE 2026",
   EVENT_TITLE: "Time Jumpers: Past to Tomorrow!",
   EVENT_DATE: "14 November 2026",
-  BANK: { name: "Nama Bank", number: "1234567890", holder: "Nama Pemilik Rekening" },
-  UNIQUE_CODE: 0,
   CLOSES_AT: "", /* contoh: "2026-11-07T23:59:00+07:00"; kosong = tidak ditutup */
   WA_NUMBER: "628xxxxxxxxxx", /* WhatsApp panitia, format 62... */
-  /* price 0 tampil sebagai "Rp [harga]" sampai Anda isi */
   EVENTS: [
-    { id: "dance13", name: "Creative Dance", grade: "Kelas 1-3", price: 75000 },
-    { id: "dance46", name: "Creative Dance", grade: "Kelas 4-6", price: 75000 },
-    { id: "bento", name: "Bento Creation", grade: "Kelas [isi kelas]", price: 0 },
-    { id: "story", name: "Storytelling \u201CCita-citaku\u201D", grade: "Kelas [isi kelas]", price: 0 }
+    { id: "bento", name: "Bento Creation", grade: "Kelas [isi kelas]" },
+    { id: "story", name: "Storytelling \u201CCita-citaku\u201D", grade: "Kelas [isi kelas]" }
   ]
 };
 /* ================================ */
@@ -245,20 +207,16 @@ const f = $("f"), sections = [...document.querySelectorAll(".step")], crumbs = [
 const idr = n => !n ? "Rp [harga]" : new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
 const val = n => { const e = f.elements[n]; if (!e) return ""; if (e.value !== undefined && !(e instanceof RadioNodeList && !e.value)) return (e.value || "").trim(); return ""; };
 const evs = () => CONFIG.EVENTS.filter(e => f.querySelector('input[name="event"][value="' + e.id + '"]').checked);
-const total = () => evs().reduce((t, e) => t + e.price, 0) + CONFIG.UNIQUE_CODE;
 let step = 0, file = null, busy = false;
 const subId = crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2);
 
 $("evTag").textContent = "Formulir Pendaftaran " + CONFIG.EVENT_NAME;
 $("evTitle").textContent = CONFIG.EVENT_TITLE;
 document.title = "Pendaftaran " + CONFIG.EVENT_NAME;
-$("bankName").textContent = CONFIG.BANK.name;
-$("acctNum").textContent = CONFIG.BANK.number;
-$("acctHolder").textContent = "a/n " + CONFIG.BANK.holder;
 
 /* Kartu lomba */
 $("events").innerHTML = CONFIG.EVENTS.map(e =>
-  `<label class="rc"><input type="checkbox" name="event" value="${e.id}"><span>${e.name}<small>${e.grade}</small><small>${idr(e.price)}</small></span></label>`).join("");
+  `<label class="rc"><input type="checkbox" name="event" value="${e.id}"><span>${e.name}<small>${e.grade}</small><small>Gratis</small></span></label>`).join("");
 
 /* Validasi */
 const rules = {
@@ -303,68 +261,16 @@ window.addEventListener("popstate", e => { if (busy) return; show(e.state && e.s
 history.replaceState({ s: 0 }, "");
 
 function summaryHTML() {
-  const rows = [["Nama siswa", val("fullName")], ["Orang tua / wali", val("parentName")]].concat(evs().map(e => [e.name + ", " + e.grade, idr(e.price)]), [["Tanggal", CONFIG.EVENT_DATE]]).filter(r => r[1]);
+  const rows = [["Nama siswa", val("fullName")], ["Orang tua / wali", val("parentName")]].concat(evs().map(e => [e.name, e.grade]), [["Tanggal", CONFIG.EVENT_DATE], ["Biaya", "Gratis"]]).filter(r => r[1]);
   const box = document.createElement("div");
   rows.forEach(r => { const d = document.createElement("div"); d.className = "row"; const a = document.createElement("span"); a.textContent = r[0]; const b = document.createElement("b"); b.textContent = r[1]; d.append(a, b); box.append(d); });
-  const t = document.createElement("div"); t.className = "row total"; t.innerHTML = "<span>Total</span><b></b>"; t.lastChild.textContent = idr(total()); box.append(t);
   return box;
 }
 function renderSummary() { $("summary").replaceChildren(...summaryHTML().childNodes); }
 
-/* Copy account number */
-$("copyBtn").onclick = async () => {
-  const b = $("copyBtn"), txt = CONFIG.BANK.number;
-  try { await navigator.clipboard.writeText(txt); }
-  catch (_) { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); try { document.execCommand("copy"); } catch (e) {} t.remove(); }
-  b.textContent = "Tersalin"; b.classList.add("ok"); setTimeout(() => { b.textContent = "Salin"; b.classList.remove("ok"); }, 2000);
-};
-
-/* File upload */
-const OK_TYPES = ["image/jpeg", "image/png", "image/heic", "image/heif", "application/pdf"], MAX = 5 * 1024 * 1024;
-const sizeTxt = b => b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB";
-function shrink(fl) {
-  return new Promise(res => {
-    const u = URL.createObjectURL(fl), im = new Image();
-    im.onload = () => {
-      URL.revokeObjectURL(u);
-      const k = Math.min(1, 1600 / Math.max(im.width, im.height));
-      if (k === 1 && fl.type === "image/jpeg" && fl.size < 1.5e6) return res(fl);
-      const c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
-      const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
-      c.toBlob(b => res(b ? new File([b], fl.name.replace(/\.\w+$/, "") + ".jpg", { type: "image/jpeg" }) : null), "image/jpeg", 0.82);
-    };
-    im.onerror = () => { URL.revokeObjectURL(u); res(null); };
-    im.src = u;
-  });
-}
-async function setFile(fl) {
-  if (!fl) return;
-  const err = m => { $("e-file").textContent = m; };
-  if (!OK_TYPES.includes(fl.type)) return err("Gunakan file JPG, PNG, atau PDF.");
-  if (fl.type !== "application/pdf") {
-    err("Memproses foto..."); fl = await shrink(fl);
-    if (!fl) return err("Foto tidak dapat dibaca. Gunakan JPG atau PNG, atau tangkap layar bukti transfer.");
-  }
-  if (fl.size > MAX) return err("Ukuran file ini " + sizeTxt(fl.size) + ". Pilih file di bawah 5 MB.");
-  err("");
-  if (file && file.url) URL.revokeObjectURL(file.url);
-  file = fl;
-  const thumb = $("thumb");
-  if (fl.type === "application/pdf") thumb.innerHTML = '<div class="pdf">PDF</div>';
-  else { file.url = URL.createObjectURL(fl); thumb.innerHTML = ""; const im = new Image(); im.src = file.url; im.alt = "Pratinjau bukti transfer"; thumb.append(im); }
-  $("fName").textContent = fl.name; $("fSize").textContent = sizeTxt(fl.size);
-  $("dropIdle").hidden = true; $("preview").hidden = false;
-  updateSubmit();
-}
-$("btnFile").onclick = $("btnReplace").onclick = () => { $("fileIn").value = ""; $("fileIn").click(); };
-$("btnCam").onclick = () => { $("camIn").value = ""; $("camIn").click(); };
-$("fileIn").onchange = e => setFile(e.target.files[0]);
-$("camIn").onchange = e => setFile(e.target.files[0]);
-["dragover", "dragenter"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.add("over"); }));
-["dragleave", "drop"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.remove("over"); }));
-$("drop").addEventListener("drop", e => setFile(e.dataTransfer.files[0]));
+/* Persetujuan */
 $("consent").onchange = $("consentMedia").onchange = updateSubmit;
-function updateSubmit() { $("submitBtn").disabled = busy || !(file && $("consent").checked && $("consentMedia").checked); }
+function updateSubmit() { $("submitBtn").disabled = busy || !($("consent").checked && $("consentMedia").checked); }
 
 /* Submit via hidden iframe (no CORS) */
 let timer = null;
@@ -382,28 +288,22 @@ window.addEventListener("message", e => {
 });
 
 $("submitBtn").onclick = () => {
-  if (busy || !file) return;
+  if (busy) return;
   if (!checkStep(0)) return show(0, true);
   if (!checkStep(1)) return show(1, true);
   busy = true; $("banner").hidden = true; $("submitBtn").disabled = true; $("submitBtn").textContent = "Mengirim, mohon tunggu...";
   if (CONFIG.SCRIPT_URL.includes("PASTE_")) { setTimeout(() => success("REG-DEMO-0001"), 900); return; }
-  const rd = new FileReader();
-  rd.onerror = () => fail("File tidak dapat dibaca. Pilih ulang file Anda.");
-  rd.onload = () => {
-    const data = {
-      fullName: val("fullName"), parentName: val("parentName"), email: val("email"), phone: val("phone"),
-      institution: val("institution"), city: val("city"),
-      eventSelection: evs().map(e => e.name + " (" + e.grade + ")").join("; "), eventDate: CONFIG.EVENT_DATE,
-      totalAmount: total(), mediaConsent: "Ya", submissionId: subId, website: val("website"),
-      fileName: file.name, fileType: file.type, fileData: String(rd.result).split(",")[1]
-    };
-    const form = document.createElement("form");
-    form.method = "POST"; form.action = CONFIG.SCRIPT_URL; form.target = "gas"; form.hidden = true;
-    Object.entries(data).forEach(([k, v]) => { const i = document.createElement("textarea"); i.name = k; i.value = v; form.append(i); });
-    document.body.append(form); form.submit(); form.remove();
-    timer = setTimeout(() => fail("Belum ada konfirmasi dari server. Cek email Anda dulu. Jika belum ada email, tekan Kirim pendaftaran sekali lagi (data tidak akan ganda)."), 60000);
+  const data = {
+    fullName: val("fullName"), parentName: val("parentName"), email: val("email"), phone: val("phone"),
+    institution: val("institution"), city: val("city"),
+    eventSelection: evs().map(e => e.name + " (" + e.grade + ")").join("; "), eventDate: CONFIG.EVENT_DATE,
+    mediaConsent: "Ya", submissionId: subId, website: val("website")
   };
-  rd.readAsDataURL(file);
+  const form = document.createElement("form");
+  form.method = "POST"; form.action = CONFIG.SCRIPT_URL; form.target = "gas"; form.hidden = true;
+  Object.entries(data).forEach(([k, v]) => { const i = document.createElement("textarea"); i.name = k; i.value = v; form.append(i); });
+  document.body.append(form); form.submit(); form.remove();
+  timer = setTimeout(() => fail("Belum ada konfirmasi dari server. Cek email Anda dulu. Jika belum ada email, tekan Kirim pendaftaran sekali lagi (data tidak akan ganda)."), 60000);
 };
 $("help").href = "https://wa.me/" + CONFIG.WA_NUMBER + "?text=" + encodeURIComponent("Halo panitia " + CONFIG.EVENT_NAME + ", saya butuh bantuan pendaftaran.");
 if (CONFIG.CLOSES_AT && Date.now() > new Date(CONFIG.CLOSES_AT)) { f.hidden = true; $("progress").hidden = true; $("closed").hidden = false; }
