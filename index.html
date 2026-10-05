@@ -74,6 +74,12 @@ ol.steps li{margin-bottom:4px}
 .preview .meta span{color:var(--muted)}
 .consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0 0;font-size:14px;font-weight:400}
 .consent input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--accent)}
+.cp{background:var(--tint);border-radius:var(--r);padding:12px 14px;margin:0 0 18px;font-size:14.5px}
+.cp b{display:block;margin-bottom:2px}
+.cp a{color:var(--accent-d);font-weight:600;text-decoration:none}
+.go{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:12px;font-weight:700;text-decoration:none;margin-top:10px;padding:0 16px}
+.go.p{background:var(--accent);color:#fff}
+.go.q{background:#fff;color:var(--accent-d);border:1.5px solid var(--accent)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 [hidden]{display:none!important}
 .banner{background:#FDECEA;color:var(--err);border-radius:12px;padding:12px 14px;margin-top:16px;font-size:14.5px}
@@ -159,6 +165,8 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
 
   <div class="slip" id="summary" aria-label="Ringkasan pendaftaran"></div>
 
+  <div class="cp" id="cpStep"></div>
+
   <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 
   <label class="consent"><input type="checkbox" id="consent">
@@ -180,8 +188,13 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
   <p class="sub" style="margin-bottom:12px">Simpan nomor referensi ini. Salinannya juga dikirim ke email Anda.</p>
   <div class="ref" id="refNo"></div>
   <div class="slip" id="doneSummary"></div>
+  <div id="nextSteps" style="margin:0 0 16px" hidden>
+    <a class="go p" id="goGroup" target="_blank" rel="noopener" hidden>Gabung grup WhatsApp lomba</a>
+    <a class="go q" id="goJuknis" target="_blank" rel="noopener" hidden>Buka Juknis / Juklak</a>
+  </div>
   <p class="sub" style="margin:0 0 12px">Pendaftaran Anda sudah kami terima. Jika ada kendala, panitia akan menghubungi Anda melalui WhatsApp.</p>
   <p class="sub" style="margin:0">Belum menerima email konfirmasi? Cek folder Spam atau Promosi.</p>
+  <div class="cp" id="cpDone" style="margin:16px 0 0;text-align:left"></div>
 </section>
 <section class="done-card" id="closed" hidden><h2>Pendaftaran ditutup</h2><p class="sub">Terima kasih atas minat Anda. Pendaftaran ASCE 2026 sudah ditutup.</p></section>
 </div>
@@ -198,6 +211,7 @@ const CONFIG = {
   EVENT_TITLE: "Time Jumpers: Past to Tomorrow!",
   EVENT_DATE: "Sabtu, 14 November 2026",
   CLOSES_AT: "", /* contoh: "2026-11-07T23:59:00+07:00"; kosong = tidak ditutup */
+  CONTACTS: [{ name: "Ms. Dyah", phone: "+62 822-4579-0874" }, { name: "Ms. Glory", phone: "+62 857-3549-0494" }],
   WA_NUMBER: "628xxxxxxxxxx", /* WhatsApp panitia, format 62... */
   EVENTS: [
     { id: "bento", name: "Bento Creation" },
@@ -280,16 +294,19 @@ function updateSubmit() { $("submitBtn").disabled = busy || !($("consent").check
 /* Submit via hidden iframe (no CORS) */
 let timer = null;
 function fail(msg) { busy = false; clearTimeout(timer); $("banner").textContent = msg; $("banner").hidden = false; $("submitBtn").textContent = "Kirim pendaftaran"; updateSubmit(); }
-function success(ref) {
+function success(ref, x) {
   clearTimeout(timer); busy = false;
   f.hidden = true; $("done").hidden = false; crumbs.forEach(c => c.className = "done");
   $("refNo").textContent = ref;
+  x = x || {};
+  [["goGroup", x.group], ["goJuknis", x.juknis]].forEach(([id, u]) => { const ok = typeof u === "string" && /^https:\/\//.test(u); $(id).hidden = !ok; if (ok) $(id).href = u; });
+  $("nextSteps").hidden = $("goGroup").hidden && $("goJuknis").hidden;
   $("doneSummary").replaceChildren(...summaryHTML().childNodes);
   window.scrollTo(0, 0); $("hd").focus({ preventScroll: true });
 }
 window.addEventListener("message", e => {
   if (!busy || !/(^https:\/\/script\.google\.com$|\.googleusercontent\.com$)/.test(e.origin) || !e.data || e.data.type !== "registration") return;
-  e.data.ok ? success(e.data.ref) : fail(e.data.message || "Terjadi kesalahan. Silakan coba lagi.");
+  e.data.ok ? success(e.data.ref, e.data) : fail(e.data.message || "Terjadi kesalahan. Silakan coba lagi.");
 });
 
 $("submitBtn").onclick = () => {
@@ -297,7 +314,7 @@ $("submitBtn").onclick = () => {
   if (!checkStep(0)) return show(0, true);
   if (!checkStep(1)) return show(1, true);
   busy = true; $("banner").hidden = true; $("submitBtn").disabled = true; $("submitBtn").textContent = "Mengirim, mohon tunggu...";
-  if (CONFIG.SCRIPT_URL.includes("PASTE_")) { setTimeout(() => success("REG-DEMO-0001"), 900); return; }
+  if (CONFIG.SCRIPT_URL.includes("PASTE_")) { setTimeout(() => success("REG-DEMO-0001", { group: "https://chat.whatsapp.com/DEMO", juknis: "https://drive.google.com/DEMO" }), 900); return; }
   const data = {
     fullName: val("fullName"), parentName: val("parentName"), email: val("email"), phone: val("phone"),
     institution: val("institution"), studentClass: val("studentClass"), city: val("city"),
@@ -310,6 +327,15 @@ $("submitBtn").onclick = () => {
   document.body.append(form); form.submit(); form.remove();
   timer = setTimeout(() => fail("Belum ada konfirmasi dari server. Cek email Anda dulu. Jika belum ada email, tekan Kirim pendaftaran sekali lagi (data tidak akan ganda)."), 60000);
 };
+["cpStep", "cpDone"].forEach(id => {
+  const box = $(id), t = document.createElement("b"); t.textContent = "Contact Person (WhatsApp)"; box.append(t);
+  CONFIG.CONTACTS.forEach(c => {
+    const r = document.createElement("div"); r.className = "row";
+    const n = document.createElement("span"); n.textContent = c.name;
+    const a = document.createElement("a"); a.href = "https://wa.me/" + c.phone.replace(/\D/g, ""); a.textContent = c.phone;
+    r.append(n, a); box.append(r);
+  });
+});
 $("help").href = "https://wa.me/" + CONFIG.WA_NUMBER + "?text=" + encodeURIComponent("Halo panitia " + CONFIG.EVENT_NAME + ", saya butuh bantuan pendaftaran.");
 if (CONFIG.CLOSES_AT && Date.now() > new Date(CONFIG.CLOSES_AT)) { f.hidden = true; $("progress").hidden = true; $("closed").hidden = false; }
 </script>
