@@ -211,11 +211,10 @@ const CONFIG = {
   EVENT_TITLE: "Time Jumpers: Past to Tomorrow!",
   EVENT_DATE: "Sabtu, 14 November 2026",
   CLOSES_AT: "", /* contoh: "2026-11-07T23:59:00+07:00"; kosong = tidak ditutup */
-  CONTACTS: [{ name: "Ms. Dyah", phone: "+62 822-4579-0874" }, { name: "Ms. Glory", phone: "+62 857-3549-0494" }],
-  WA_NUMBER: "628xxxxxxxxxx", /* WhatsApp panitia, format 62... */
+  WA_NUMBER: "6285735490494", /* WhatsApp panitia, format 62... */
   EVENTS: [
-    { id: "bento", name: "Bento Creation" },
-    { id: "story", name: "Storytelling \u201CCita-citaku\u201D", }
+    { id: "bento", name: "Bento Creation", label: "Bento Creation", cp: { name: "Ms. Christina", phone: "+62 812-3411-9545" } },
+    { id: "story", name: "Storytelling \u201CCita-citaku\u201D", label: "Storytelling", cp: { name: "Ms. Dyah", phone: "+62 822-4579-0874" } }
   ]
 };
 /* ================================ */
@@ -285,7 +284,7 @@ function summaryHTML() {
   rows.forEach(r => { const d = document.createElement("div"); d.className = "row"; const a = document.createElement("span"); a.textContent = r[0]; const b = document.createElement("b"); b.textContent = r[1]; d.append(a, b); box.append(d); });
   return box;
 }
-function renderSummary() { $("summary").replaceChildren(...summaryHTML().childNodes); }
+function renderSummary() { $("summary").replaceChildren(...summaryHTML().childNodes); contactsInto($("cpStep"), evs()[0]); }
 
 /* Persetujuan */
 $("consent").onchange = $("consentMedia").onchange = updateSubmit;
@@ -298,6 +297,7 @@ function success(ref, x) {
   clearTimeout(timer); busy = false;
   f.hidden = true; $("done").hidden = false; crumbs.forEach(c => c.className = "done");
   $("refNo").textContent = ref;
+  contactsInto($("cpDone"), evs()[0]);
   x = x || {};
   [["goGroup", x.group], ["goJuknis", x.juknis]].forEach(([id, u]) => { const ok = typeof u === "string" && /^https:\/\//.test(u); $(id).hidden = !ok; if (ok) $(id).href = u; });
   $("nextSteps").hidden = $("goGroup").hidden && $("goJuknis").hidden;
@@ -327,15 +327,17 @@ $("submitBtn").onclick = () => {
   document.body.append(form); form.submit(); form.remove();
   timer = setTimeout(() => fail("Belum ada konfirmasi dari server. Cek email Anda dulu. Jika belum ada email, tekan Kirim pendaftaran sekali lagi (data tidak akan ganda)."), 60000);
 };
-["cpStep", "cpDone"].forEach(id => {
-  const box = $(id), t = document.createElement("b"); t.textContent = "Contact Person (WhatsApp)"; box.append(t);
-  CONFIG.CONTACTS.forEach(c => {
+function contactsInto(box, e) {
+  box.replaceChildren();
+  const t = document.createElement("b"); t.textContent = "Contact Person (WhatsApp)"; box.append(t);
+  [[e && e.cp, e && e.label]].forEach(([c, tag]) => {
+    if (!c) return;
     const r = document.createElement("div"); r.className = "row";
-    const n = document.createElement("span"); n.textContent = c.name;
+    const n = document.createElement("span"); n.textContent = c.name + " (" + tag + ")";
     const a = document.createElement("a"); a.href = "https://wa.me/" + c.phone.replace(/\D/g, ""); a.textContent = c.phone;
     r.append(n, a); box.append(r);
   });
-});
+}
 $("help").href = "https://wa.me/" + CONFIG.WA_NUMBER + "?text=" + encodeURIComponent("Halo panitia " + CONFIG.EVENT_NAME + ", saya butuh bantuan pendaftaran.");
 if (CONFIG.CLOSES_AT && Date.now() > new Date(CONFIG.CLOSES_AT)) { f.hidden = true; $("progress").hidden = true; $("closed").hidden = false; }
 </script>
