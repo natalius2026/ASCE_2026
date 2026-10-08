@@ -115,7 +115,8 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
   <p class="sub">Isi data siswa yang akan didaftarkan.</p>
 
   <div class="field"><label for="fullName">Nama lengkap siswa</label>
-    <input id="fullName" name="fullName" type="text" autocomplete="name" aria-describedby="e-fullName">
+    <input id="fullName" name="fullName" type="text" autocomplete="name" aria-describedby="h-fullName e-fullName">
+    <div class="hint" id="h-fullName">Tulis nama lengkap sesuai yang akan dicetak di sertifikat.</div>
     <div class="err" id="e-fullName" role="alert"></div></div>
 
   <div class="field"><label for="parentName">Nama orang tua / wali</label>
@@ -162,6 +163,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;margin-top:18px}
 <section class="step" data-step="2" aria-labelledby="h2" hidden>
   <h2 id="h2" tabindex="-1">Ringkasan &amp; kirim</h2>
   <p class="sub">Periksa data Anda sebelum mengirim. Pendaftaran ini gratis.</p>
+  <div class="notice">Periksa penulisan nama siswa. Nama ini akan dicetak di sertifikat.</div>
 
   <div class="slip" id="summary" aria-label="Ringkasan pendaftaran"></div>
 
